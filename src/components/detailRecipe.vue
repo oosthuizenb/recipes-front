@@ -1,38 +1,51 @@
 <template>
   <div class="recipe-body">
-    <button @click='viewRecipes'>All recipes</button>
-    <button @click='editRecipe'>Edit recipe</button>
+    <button @click='viewList'>All recipes</button>
+    <button @click='editRecipe'>Edit</button>
+    <button @click='deleteRecipe'>Delete</button>
     <div class="recipe">
-      <h2>Title</h2>
-      <h4>Serves: {{}}</h4>
+      <h2>{{ recipe.title }}</h2>
+      <h4>Serves: {{ recipe.serves }}</h4>
       <h4>Ingredients</h4>
       <ul>
         <li v-for="ingredient in recipe.ingredients">{{ ingredient }}</li>
       </ul>
       <hr>
-      <p>Method</p>
+      <p>{{ recipe.method }}</p>
     </div>
   </div>
 </template>
 
 <script>
+import api from '../api'
+
   export default {
     data() {
       return {
         id: this.$route.params.id,
-        recipe: {'ingredients': ['olives', 'feta', 'avo'], 'id': 0}
+        recipe: {}
       }
     },
     methods: {
-      viewRecipes(){
+      viewList(){
         this.$router.push('/');
       },
       editRecipe(){
         this.$router.push('/recipe/edit/' + this.id)
+      },
+      deleteRecipe(){
+        api.delete('http://127.0.0.1:8000/api/recipes/' + this.id + '/')
+          .then(response => this.viewList())
+          .catch(error => console.log(error))
       }
     },
     created(){
-      console.log(this.id);
+      api.get('http://127.0.0.1:8000/api/recipes/' + this.id)
+        .then(response => {
+          this.recipe = response.data;
+          this.recipe.ingredients = response.data.ingredients.split(',');
+        })
+        .catch(error => console.log(error))
     }
   }
 </script>
