@@ -40,20 +40,24 @@ export default {
   },
   methods: {
     onSubmit(){
-      // If the form is for editing, else it is for adding new recipe
       this.recipe.ingredients = this.recipe.ingredients.join();
+      // If the form is for editing, else it is for adding new recipe
       if(this.id){
         api.put('http://127.0.0.1:8000/api/recipes/' + this.id + '/', this.recipe)
           .then(response => this.viewDetail(this.id))
           .catch(error => console.log(error))
       } else {
-        api.post('http://127.0.0.1:8000/api/recipes/', this.recipe)
+        api.post('http://127.0.0.1:8000/api/recipes/', this.recipe, {
+          headers: {
+            'Authorization': 'JWT ' + localStorage.getItem('token')
+          }
+        })
           .then(response => {
             this.recipe = response.data;
             this.viewDetail(this.recipe.id);
           })
           .catch(error => console.log(error));
-      }
+        }
     },
     deleteIng(index){
       this.recipe.ingredients.splice(index, 1);
@@ -77,7 +81,7 @@ export default {
         })
         .catch(error => console.log(error));
     }
-  }
+  },
 }
 </script>
 

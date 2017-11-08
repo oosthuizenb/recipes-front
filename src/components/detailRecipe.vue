@@ -6,6 +6,7 @@
     <div class="recipe">
       <h2>{{ recipe.title }}</h2>
       <h4>Serves: {{ recipe.serves }}</h4>
+      <h4>Chef: {{ recipe.owner }}</h4>
       <h4>Ingredients</h4>
       <ul>
         <li v-for="ingredient in recipe.ingredients">{{ ingredient }}</li>
