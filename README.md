@@ -1,6 +1,13 @@
-# recipes-front
+# Recipes
 
-> A Vue.js project
+> A Vue.js front-end for the Django Rest Framework back-end
+
+Currently this web application includes the following features:
+- Add/edit/delete a recipe
+- Only authenticated users can manipulate recipes
+- Only owner of recipe can edit/delete recipe
+- View your own recipes
+- View all recipes
 
 ## Build Setup
 
