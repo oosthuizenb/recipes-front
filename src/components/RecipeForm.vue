@@ -6,6 +6,10 @@
       <form>
         <label>Title</label>
         <input type="text" v-model='recipe.title'>
+        <label>Featured Image</label>
+        <div class="dropbox" @drop.prevent="drop($event)" @dragenter.prevent @dragover.prevent>
+
+        </div>
         <label>Serves(amount)</label>
         <input type="text" v-model='recipe.serves'>
         <label>Ingredients</label>
@@ -17,6 +21,7 @@
         <button @click.prevent="newIng">New</button>
         <label>Method</label>
         <textarea rows="8" cols="80" v-model='recipe.method'></textarea>
+        <br>
         <button @click.prevent="onSubmit">Submit</button>
       </form>
     </div>
@@ -32,6 +37,7 @@ export default {
       id: this.$route.params.id,
       recipe: {
         'title': '',
+        'image': '',
         'serves': '',
         'ingredients': [''],
         'method': ''
@@ -70,7 +76,14 @@ export default {
     },
     viewDetail(id){
       this.$router.push('/recipe/' + id);
-    }
+    },
+    drop(e){
+      let dt = e.dataTransfer;
+      let files = dt.files;
+
+     console.log(files);
+    },
+
   },
   created(){
     if(this.id){
@@ -99,9 +112,15 @@ export default {
   }
 
   textarea{
-    max-width: 100%;
+    width: 100%;
     resize: vertical;
     height: 200px;
   }
+}
+
+.dropbox{
+  height: 200px;
+  width: 100%;
+  border: 2px dashed #CBCBCB;
 }
 </style>

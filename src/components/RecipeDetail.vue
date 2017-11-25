@@ -5,6 +5,7 @@
     <button @click='deleteRecipe'>Delete</button>
     <div class="recipe">
       <h2>{{ recipe.title }}</h2>
+      <img v-if="recipe.image != null" :src="recipe.image" alt="Recipe photo">
       <h4>Serves: {{ recipe.serves }}</h4>
       <h4>Chef: {{ recipe.owner }}</h4>
       <h4>Ingredients</h4>
@@ -35,18 +36,19 @@ import api from '../api'
         this.$router.push('/recipe/edit/' + this.id)
       },
       deleteRecipe(){
-        api.delete('http://127.0.0.1:8000/api/recipes/' + this.id + '/')
+        api.delete('http://127.0.0.1:8000/api/feed/' + this.id + '/')
           .then(response => this.viewList())
           .catch(error => console.log(error))
       }
     },
     created(){
-      api.get('http://127.0.0.1:8000/api/recipes/' + this.id)
+      api.get('http://127.0.0.1:8000/api/feed/' + this.id)
         .then(response => {
           this.recipe = response.data;
           this.recipe.ingredients = response.data.ingredients.split(',');
         })
         .catch(error => console.log(error))
+
     }
   }
 </script>
@@ -55,6 +57,12 @@ import api from '../api'
 .recipe-body{
   button{
     float: left;
+  }
+
+  .recipe{
+    img{
+      width: 100%;
+    }
   }
 }
 </style>
