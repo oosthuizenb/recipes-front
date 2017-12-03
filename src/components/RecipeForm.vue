@@ -7,9 +7,7 @@
         <label>Title</label>
         <input type="text" v-model='recipe.title'>
         <label>Featured Image</label>
-        <div class="dropbox" @drop.prevent="drop($event)" @dragenter.prevent @dragover.prevent>
 
-        </div>
         <label>Serves(amount)</label>
         <input type="text" v-model='recipe.serves'>
         <label>Ingredients</label>
@@ -41,19 +39,41 @@ export default {
         'serves': '',
         'ingredients': [''],
         'method': ''
-      }
+      },
+      files: [],
     }
   },
   methods: {
-    onSubmit(){
+    onSubmit() {
       this.recipe.ingredients = this.recipe.ingredients.join();
+      let formData = new FormData();
+      for (const key in this.recipe) {
+        formData.append(key, this.recipe[key]);
+        console.log(key, this.recipe[key]);
+      };
+      // for (let i = 0; i < this.files.length; i++) {
+      //   formData.append('image' + i, this.files[i]);
+      // };
       // If the form is for editing, else it is for adding new recipe
-      if(this.id){
-        api.put('http://127.0.0.1:8000/api/recipes/' + this.id + '/', this.recipe)
-          .then(response => this.viewDetail(this.id))
+      if(this.id) {
+        api.put('http://127.0.0.1:8000/api/recipes/' + this.id + '/', formData, {
+          headers: {
+            'Authorization': 'JWT ' + localStorage.getItem('token')
+          },
+          onUploadProgress: event => {
+            if (event.lengthComputable) {
+              console.log(event.loaded + ' ' + event.total);
+              if (event.loaded === event.total) {
+                console.log('finished');
+                this.viewDetail(this.id);
+              }
+            }
+          }
+        })
+          .then(response => console.log(response))
           .catch(error => console.log(error))
       } else {
-        api.post('http://127.0.0.1:8000/api/recipes/', this.recipe, {
+        api.post('http://127.0.0.1:8000/api/recipes/', formData, {
           headers: {
             'Authorization': 'JWT ' + localStorage.getItem('token')
           }
@@ -65,29 +85,26 @@ export default {
           .catch(error => console.log(error));
         }
     },
-    deleteIng(index){
+    deleteIng(index) {
       this.recipe.ingredients.splice(index, 1);
     },
-    newIng(){
+    newIng() {
       this.recipe.ingredients.push('');
     },
-    viewList(){
+    viewList() {
       this.$router.push('/');
     },
-    viewDetail(id){
+    viewDetail(id) {
       this.$router.push('/recipe/' + id);
     },
-    drop(e){
-      let dt = e.dataTransfer;
-      let files = dt.files;
-
-     console.log(files);
-    },
-
   },
-  created(){
+  created() {
     if(this.id){
-      api.get('http://127.0.0.1:8000/api/recipes/' + this.id)
+      api.get('http://127.0.0.1:8000/api/recipes/' + this.id + '/', {
+        headers: {
+          'Authorization': 'JWT ' + localStorage.getItem('token')
+        }
+      })
         .then(response => {
           this.recipe = response.data;
           this.recipe.ingredients = response.data.ingredients.split(',');
@@ -99,26 +116,26 @@ export default {
 </script>
 
 <style lang="scss">
-.form-recipe{
-  button{
+.form-recipe {
+  button {
     float: none;
     margin: 10px 0;
     padding: 6px 10px;
   }
 
-  label{
+  label {
     display: block;
     padding: 10px 0;
   }
 
-  textarea{
+  textarea {
     width: 100%;
     resize: vertical;
     height: 200px;
   }
 }
 
-.dropbox{
+.dropbox-main {
   height: 200px;
   width: 100%;
   border: 2px dashed #CBCBCB;

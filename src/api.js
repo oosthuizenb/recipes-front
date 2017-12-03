@@ -7,8 +7,8 @@ export default {
       .then(response => Promise.resolve(response))
       .catch(error => Promise.reject(error));
   },
-  put: (url, data) => {
-    return axios.put(url, data)
+  put: (url, data, config) => {
+    return axios.put(url, data, config)
       .then(response => Promise.resolve(response))
       .catch(error => Promise.reject(error))
   },
@@ -17,8 +17,8 @@ export default {
       .then(response => Promise.resolve(response))
       .catch(error => Promise.reject(error))
   },
-  delete: url => {
-    return axios.delete(url)
+  delete: (url, config) => {
+    return axios.delete(url, config)
       .then(response => Promise.resolve(response))
       .catch(error => Promise.reject(error))
   }

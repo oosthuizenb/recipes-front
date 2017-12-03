@@ -36,7 +36,11 @@ import api from '../api'
         this.$router.push('/recipe/edit/' + this.id)
       },
       deleteRecipe(){
-        api.delete('http://127.0.0.1:8000/api/feed/' + this.id + '/')
+        api.delete('http://127.0.0.1:8000/api/recipes/' + this.id + '/', {
+          headers: {
+            'Authorization': 'JWT ' + localStorage.getItem('token')
+          }
+        })
           .then(response => this.viewList())
           .catch(error => console.log(error))
       }
