@@ -8,16 +8,8 @@
 </template>
 
 <script>
-import listRecipes from './components/RecipeList.vue'
-import detailRecipe from './components/RecipeDetail.vue'
-import formRecipe from './components/RecipeForm.vue'
 
 export default {
-  components: {
-    'list-recipes': listRecipes,
-    'detail-recipe': detailRecipe,
-    'form-recipe': formRecipe
-  },
   data () {
     return {
 

@@ -7,7 +7,7 @@
         <label>Title</label>
         <input type="text" v-model='recipe.title'>
         <label>Featured Image</label>
-
+        <app-file-upload v-bind:featured="true" v-on:fileChange="changeFeatured()"></app-file-upload>
         <label>Serves(amount)</label>
         <input type="text" v-model='recipe.serves'>
         <label>Ingredients</label>
@@ -28,35 +28,39 @@
 
 <script>
 import api from '../api'
+import fileUpload from './FileUpload.vue'
 
 export default {
+  components: {
+    'app-file-upload': fileUpload,
+  },
   data(){
     return {
       id: this.$route.params.id,
       recipe: {
         'title': '',
-        'image': '',
+        'featured_image': '',
         'serves': '',
         'ingredients': [''],
-        'method': ''
+        'method': '',
+        'additional_images': '',
       },
-      files: [],
     }
   },
   methods: {
     onSubmit() {
       this.recipe.ingredients = this.recipe.ingredients.join();
-      let formData = new FormData();
-      for (const key in this.recipe) {
-        formData.append(key, this.recipe[key]);
-        console.log(key, this.recipe[key]);
-      };
+      // let formData = new FormData();
+      // for (const key in this.recipe) {
+      //   formData.append(key, this.recipe[key]);
+      //   console.log(key, this.recipe[key]);
+      // };
       // for (let i = 0; i < this.files.length; i++) {
       //   formData.append('image' + i, this.files[i]);
       // };
       // If the form is for editing, else it is for adding new recipe
       if(this.id) {
-        api.put('http://127.0.0.1:8000/api/recipes/' + this.id + '/', formData, {
+        api.put('http://127.0.0.1:8000/api/recipes/' + this.id + '/', this.recipe, {
           headers: {
             'Authorization': 'JWT ' + localStorage.getItem('token')
           },
@@ -84,6 +88,9 @@ export default {
           })
           .catch(error => console.log(error));
         }
+    },
+    changeFeatured(file) {
+      this.recipe.featured_image = file;
     },
     deleteIng(index) {
       this.recipe.ingredients.splice(index, 1);
@@ -133,11 +140,5 @@ export default {
     resize: vertical;
     height: 200px;
   }
-}
-
-.dropbox-main {
-  height: 200px;
-  width: 100%;
-  border: 2px dashed #CBCBCB;
 }
 </style>
